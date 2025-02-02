@@ -39,7 +39,26 @@ describe('Inventory - Login', () => {
         .and('contain.text', 'Username and password do not match');
     });
 
-    it.skip('Should not allow "locked_out_user" do sign in');
+    it('Should not allow "locked_out_user" to sign in', () => {
+      cy.visit(url); 
 
-    it.skip('Should login with "performance_glitch_user" and wait the products page loads');
+      cy.get('[data-test="username"]').type(users.locked_out_user.username);
+      cy.get('[data-test="password"]').type(users.locked_out_user.password);
+      cy.get('[data-test="login-button"]').click();
+    
+      cy.get('[data-test="error"]').should('be.visible')
+        .and('contain.text', 'Sorry, this user has been locked out.');
+    });
+
+    it('Should login with "performance_glitch_user" and wait for the products page to load', () => {
+      cy.visit(url); 
+
+      cy.get('[data-test="username"]').type(users.performance_glitch_user.username);
+      cy.get('[data-test="password"]').type(users.performance_glitch_user.password);
+      cy.get('[data-test="login-button"]').click();
+    
+      cy.url().should('include', '/inventory.html');
+      cy.get('.title', { timeout: 10000 }).should('have.text', 'Products');
+    });
+  
   })
