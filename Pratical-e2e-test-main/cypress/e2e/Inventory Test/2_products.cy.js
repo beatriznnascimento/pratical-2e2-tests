@@ -52,5 +52,26 @@ describe('Inventory - Products', () => {
     });
   });
 
-  it.skip('Should sort products by price properly (low to high)');
+  it('Should sort products by price properly (low to high)', () => {
+    cy.visit(url);
+  
+    cy.get('[data-test="username"]').type(users.standard_user.username);
+    cy.get('[data-test="password"]').type(users.standard_user.password);
+    cy.get('[data-test="login-button"]').click();
+  
+    cy.url().should('include', '/inventory.html');
+    cy.get('.title').should('have.text', 'Products');
+  
+    cy.get('.product_sort_container').select('lohi');
+  
+    cy.get('.inventory_item_price').then(($prices) => {
+      const prices = [...$prices].map((price) =>
+        parseFloat(price.innerText.replace('$', ''))
+      );
+  
+      const sortedPrices = [...prices].sort((a, b) => a - b);
+      expect(prices).to.deep.equal(sortedPrices);
+    });
+  });
+
 });
