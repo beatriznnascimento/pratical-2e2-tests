@@ -27,8 +27,17 @@ describe('Inventory - Login', () => {
       cy.url().should('include', '/');
       cy.get('[data-test="login-button"]').should('be.visible');
     });
+
+    it('Should not login with invalid credentials', () => {
+      cy.visit(url); 
+
+      cy.get('[data-test="username"]').type('invalid_user');
+      cy.get('[data-test="password"]').type('wrong_password');
+      cy.get('[data-test="login-button"]').click();
     
-    it.skip('Should not login with invalid credentials');
+      cy.get('[data-test="error"]').should('be.visible')
+        .and('contain.text', 'Username and password do not match');
+    });
 
     it.skip('Should not allow "locked_out_user" do sign in');
 
