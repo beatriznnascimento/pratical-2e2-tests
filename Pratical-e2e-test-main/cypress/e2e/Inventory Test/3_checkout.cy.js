@@ -57,5 +57,23 @@ describe("Inventory - Products", () => {
     cy.get('.title').should('have.text', 'Products');
   });
   
-  it.skip("Should not continue checkout with empty delivery information");
+  it("Should not continue checkout with empty delivery information", () => {
+    cy.visit(url);
+  
+    cy.get('[data-test="username"]').type(users.standard_user.username);
+    cy.get('[data-test="password"]').type(users.standard_user.password);
+    cy.get('[data-test="login-button"]').click();
+
+    cy.get('[data-test="add-to-cart-sauce-labs-backpack"]').click();
+
+    cy.get('.shopping_cart_link').click();
+
+    cy.get('[data-test="checkout"]').click();
+
+    cy.get('[data-test="continue"]').click();
+
+    cy.get('[data-test="error"]').should('be.visible')
+      .and('contain.text', 'Error: First Name is required');
+  });
+  
 });
